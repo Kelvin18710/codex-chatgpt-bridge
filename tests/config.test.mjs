@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+const temp=await fs.mkdtemp(path.join(os.tmpdir(),'bridge-config-'));
+process.env.CHATGPT_BRIDGE_CONFIG=path.join(temp,'config.json');
+const {defaults,validate,decide,loadConfig,saveConfig,revision}=await import('../src/config.mjs');
+test.after(()=>fs.rm(temp,{recursive:true,force:true}));
+test('fresh install requires explicit consultation',()=>{assert.equal(defaults.trigger.mode,'manual');assert.equal(decide(defaults,'request').shouldConsult,false);assert.equal(decide(defaults,'explicit').shouldConsult,true)});
+test('pause and budget take priority over explicit request',()=>{const c=structuredClone(defaults);c.enabled=false;assert.equal(decide(c,'explicit').shouldConsult,false);assert.equal(decide(defaults,'explicit',0,2).shouldConsult,false)});
+test('smart threshold and enabled evidence gates',()=>{const c=structuredClone(defaults);c.trigger.mode='smart';assert.equal(decide(c,'failure',1).shouldConsult,false);assert.equal(decide(c,'failure',2).shouldConsult,true);assert.equal(decide(c,'architecture').shouldConsult,true);c.trigger.architecture=false;assert.equal(decide(c,'architecture').shouldConsult,false);assert.equal(decide(c,'conflict').shouldConsult,true)});
+test('always consults once per task',()=>{const c=structuredClone(defaults);c.trigger.mode='always';assert.equal(decide(c,'request').shouldConsult,true);assert.equal(decide(c,'request',0,1).shouldConsult,false)});
+test('invalid fields and ranges rejected',()=>{for(const change of [c=>c.extra=true,c=>c.limits.waitMinutes=0,c=>c.trigger.mode='typo',c=>c.model.effort=1.5,c=>c.prompt.text='x'.repeat(12001)]){const c=structuredClone(defaults);change(c);assert.throws(()=>validate(c))}});
+test('save, stale revision rejection and invalid save preserve data',async()=>{const c=await loadConfig();const next=structuredClone(c);next.trigger.mode='smart';await saveConfig(next,revision(c));assert.deepEqual(await loadConfig(),next);await assert.rejects(saveConfig(c,revision(c)),{statusCode:409});await assert.rejects(saveConfig({...next,version:9}));assert.deepEqual(await loadConfig(),next);assert.deepEqual(JSON.parse(await fs.readFile(process.env.CHATGPT_BRIDGE_CONFIG+'.bak','utf8')),c)});

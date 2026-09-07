@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "enabled": true,
+  "model": {
+    "label": "6 Pro",
+    "family": "最新",
+    "effort": 4,
+    "autoSelect": true
+  },
+  "trigger": {
+    "mode": "manual",
+    "failedAttempts": 2,
+    "architecture": true,
+    "conflictingEvidence": true
+  },
+  "conversation": {
+    "mode": "per_task",
+    "openInNewTab": false
+  },
+  "limits": {
+    "maxSendsPerTask": 2,
+    "waitMinutes": 15,
+    "maxPromptChars": 50000
+  },
+  "prompt": {
+    "placement": "new_chat",
+    "text": "你是 Codex 的独立技术顾问。请依据提供的代码、证据和约束提出建议，区分已知事实、推断与未知；优先指出反例、遗漏和可验证的下一步。不要假设你能访问本地仓库，也不要把建议描述为已验证结论。请用清晰的中文回答。"
+  }
+}

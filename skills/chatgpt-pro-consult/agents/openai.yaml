@@ -1,0 +1,6 @@
+interface:
+  display_name: "ChatGPT 网页咨询"
+  short_description: "按配置选择网页模型和触发方式，保留咨询历史并验证顾问建议"
+  default_prompt: "使用 $chatgpt-pro-consult 按当前配置将问题和证据提交给网页顾问，验证建议并保留会话链接。"
+policy:
+  allow_implicit_invocation: true

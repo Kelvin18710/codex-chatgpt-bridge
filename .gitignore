@@ -1,0 +1,14 @@
+node_modules/
+.env*
+!.env.example
+*.log
+*.bak
+*.tmp
+*.tar.gz
+coverage/
+.local/
+.config/
+state/
+requests/
+profiles/
+config.json

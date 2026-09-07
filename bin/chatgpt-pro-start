@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu
+bridge_state="$HOME/.local/state/codex-chatgpt-bridge"
+mkdir -p "$bridge_state"
+exec flock -n "$bridge_state/start.lock" node "$HOME/.local/share/codex-chatgpt-bridge/bridge.mjs" start "$@"

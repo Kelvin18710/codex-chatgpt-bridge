@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -eu
+exec node "$HOME/.local/share/codex-chatgpt-bridge/bridge.mjs" status "$@"

@@ -1,0 +1,20 @@
+name: Tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
+      - name: Syntax checks
+        run: |
+          for file in src/*.mjs src/web/*.js scripts/*.mjs; do node --check "$file"; done
+          for file in bin/* src/*.sh; do bash -n "$file"; done
