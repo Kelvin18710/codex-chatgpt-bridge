@@ -45,7 +45,7 @@ const server=http.createServer(async(req,res)=>{
    if(p==='/api/history'){send(await entries());return}
    const match=p.match(/^\/api\/requests\/([^/]+)(\/export)?$/);
    if(match){const id=safeId(match[1]),r=await jsonFile(path.join(state,'requests',id+'.json'),null);if(!r){send({error:'记录不存在'},404);return}if(match[2]){const ext=url.searchParams.get('format')==='md'?'md':'json';res.writeHead(200,{'Content-Type':ext==='md'?'text/markdown; charset=utf-8':'application/json; charset=utf-8','Content-Disposition':`attachment; filename="${id}.${ext}"`});res.end(await fs.readFile(path.join(state,'requests',id+'.'+ext)));return}send(r);return}
-   const files={'/':'index.html','/app.js':'app.js','/style.css':'style.css'};
+   const files={'/':'index.html','/app.js':'app.js','/i18n.js':'i18n.js','/style.css':'style.css'};
    if(files[p]){res.writeHead(200,{'Content-Type':p.endsWith('.js')?'text/javascript; charset=utf-8':p.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8'});res.end(await fs.readFile(path.join(dir,'web',files[p])));return}
   }else{
    const b=await body(req);
