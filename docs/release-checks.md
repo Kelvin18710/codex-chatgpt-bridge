@@ -12,7 +12,7 @@
 
 原型的本机验收曾完成 37 项检查与 4 次真实问答（含模型切换和会话复用）。原始问答材料不随仓库发布。打包阶段没有再次发送网页问题；新增验证集中于安装与默认策略变更。
 
-GitHub CI 已配置 Node.js 22/24；尚未在 GitHub 执行，不能把本机结果当作远端 CI 通过。
+GitHub CI：提交 `109290e` 的 Node.js 22 / 24 两项任务均通过。[查看此次运行](https://github.com/Kelvin18710/codex-chatgpt-bridge/actions/runs/34186972113)。
 
 ## 双语界面验收
 
